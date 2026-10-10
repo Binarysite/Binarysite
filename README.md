@@ -10,35 +10,42 @@ Santiago, Chile (UTC-3) · [rosadilla.dev](https://www.rosadilla.dev) · [Linked
 
 The router decides what never reaches the model, the harness proves that did not lower quality, and the bench limits what the agent can do in a shell.
 
-Each one runs with no API key, has zero runtime dependencies, typed declarations checked in CI on Node 22 and 24, and its known limits written down. None is on the npm registry; use a clone or `npx github:Binarysite/<repo>#<tag>`.
+Each one runs with no API key, has zero runtime dependencies, typed declarations checked in CI on Node 22 and 24, and its known limits written down. None is on the npm registry; each block below clones and runs it.
 
 ### [llm-cascade-router](https://github.com/Binarysite/llm-cascade-router)
+[![CI](https://github.com/Binarysite/llm-cascade-router/actions/workflows/ci.yml/badge.svg)](https://github.com/Binarysite/llm-cascade-router/actions/workflows/ci.yml)
+
 Answer each chat message with the cheapest layer that can: exact match, local scoring, a cheap classifier, then the LLM. A trace per layer says which one answered and why.
 
 ```bash
-git clone https://github.com/Binarysite/llm-cascade-router.git && cd llm-cascade-router
-npm run ask
+git clone --depth 1 https://github.com/Binarysite/llm-cascade-router && cd llm-cascade-router && npm run ask
 ```
 
 In the example (an invented sticker shop), 3 of 4 messages are answered without the LLM. On its own in-sample bank of 48 invented messages, 31 skip the main LLM; on 24 held-out messages, 7 do, with 1 wrong fixed answer.
 
 ### [agent-eval-harness](https://github.com/Binarysite/agent-eval-harness)
+[![CI](https://github.com/Binarysite/agent-eval-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/Binarysite/agent-eval-harness/actions/workflows/ci.yml)
+
 Your LLM agent passes 95% of cases and still leaks one customer's order. This CI gate fails the build on that one: rule checks first, an optional LLM judge after, and one failed critical case exits 1 whatever the pass rate.
 
 ```bash
-npx -y github:Binarysite/agent-eval-harness#v0.3.0 -s scenarios.json -a agent.js
+git clone --depth 1 https://github.com/Binarysite/agent-eval-harness && cd agent-eval-harness && npm run eval:regression
 ```
 
-In the bundled example (a rule-based stand-in agent with its privacy check removed on purpose, scored by the mock judge), 23 of 24 cases pass (95.8%) and the run still exits 1. The README shows how to fetch the starter files.
+In the bundled example (a rule-based stand-in agent with its privacy check removed on purpose, scored by the mock judge), 23 of 24 cases pass (95.8%) and the run still exits 1. See the failing case, [prv-01](https://github.com/Binarysite/agent-eval-harness/blob/main/README.md#L23-L33), in the README output. The README also shows how to fetch the starter files.
 
 ### [shell-guard-bench](https://github.com/Binarysite/shell-guard-bench)
+[![CI](https://github.com/Binarysite/shell-guard-bench/actions/workflows/ci.yml/badge.svg)](https://github.com/Binarysite/shell-guard-bench/actions/workflows/ci.yml)
+
 Does your Claude Code safety hook catch `cd dir && rm -rf ~`? 89 dangerous, evasive and harmless commands, never run by the bench, thrown at any PreToolUse hook: what it blocks, what slips through, what it blocks by mistake.
 
 ```bash
-npx --yes github:Binarysite/shell-guard-bench#v0.1.0 --hook "$HOME/.claude/hooks/guard.sh" --cwd "$(mktemp -d)"
+git clone --depth 1 https://github.com/Binarysite/shell-guard-bench && cd shell-guard-bench && npm run example
 ```
 
 Measured on cc-safety-net 2.6.7: it contains all 20 critical delete and git cases and blocks none of the 17 harmless commands. Kills, rsync, databases, deploys and sudo are outside what it promises.
+
+Security: each repo has a SECURITY.md with private vulnerability reporting and CI actions pinned by commit SHA; CodeQL scans llm-cascade-router and agent-eval-harness (shell-guard-bench has none).
 
 ## What I work on
 
