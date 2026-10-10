@@ -1,18 +1,44 @@
 # Alfredo Rosadilla
 
-Senior software engineer and technical lead. I build AI agents and the interfaces around them, with an eye on evaluation, safety and cost.
+Senior software engineer and technical lead. I build AI agents and the interfaces around them, and I make them safe to ship: what never reaches the model, whether quality held, and what the agent is allowed to do in a shell.
 
 My view: an agent is ready to ship when its worst case is bounded, not when its average looks good.
 
 Santiago, Chile (UTC-3) · [rosadilla.dev](https://www.rosadilla.dev) · [LinkedIn](https://www.linkedin.com/in/alfredo-rosadilla/)
 
-## Open source
+## Open source: three tools for shipping agents
 
-Three small tools for shipping agents. Each one clones and runs with no install and no API key, has zero runtime dependencies, typed declarations checked in CI on Node 22 and 24, and its known limits written down.
+The router decides what never reaches the model, the harness proves that did not lower quality, and the bench limits what the agent can do in a shell.
 
-- **[agent-eval-harness](https://github.com/Binarysite/agent-eval-harness)**: can this agent be released? Deterministic rule checks, an optional LLM judge, and a run that fails if any critical case fails. In the bundled example (a rule-based stand-in agent with its privacy check removed on purpose, scored by the mock judge), 23 of 24 cases pass (95.8%) and the run still exits 1.
-- **[shell-guard-bench](https://github.com/Binarysite/shell-guard-bench)**: does the guard on a coding agent's shell hold? 89 dangerous, evasive and harmless commands, never run by the bench, thrown at any Claude Code PreToolUse hook: what it blocks, what slips through, what it blocks by mistake.
-- **[llm-cascade-router](https://github.com/Binarysite/llm-cascade-router)**: does this message need the model at all? Exact match, local scoring and a classifier answer first, with a trace per layer: on its own in-sample bank of 48 invented messages, 31 skip the main LLM; on 24 held-out messages, 7 do, with 1 wrong fixed answer.
+Each one runs with no API key, has zero runtime dependencies, typed declarations checked in CI on Node 22 and 24, and its known limits written down. None is on the npm registry; use a clone or `npx github:Binarysite/<repo>#<tag>`.
+
+### [llm-cascade-router](https://github.com/Binarysite/llm-cascade-router)
+Answer each chat message with the cheapest layer that can: exact match, local scoring, a cheap classifier, then the LLM. A trace per layer says which one answered and why.
+
+```bash
+git clone https://github.com/Binarysite/llm-cascade-router.git && cd llm-cascade-router
+npm run ask
+```
+
+In the example (an invented sticker shop), 3 of 4 messages are answered without the LLM. On its own in-sample bank of 48 invented messages, 31 skip the main LLM; on 24 held-out messages, 7 do, with 1 wrong fixed answer.
+
+### [agent-eval-harness](https://github.com/Binarysite/agent-eval-harness)
+Your LLM agent passes 95% of cases and still leaks one customer's order. This CI gate fails the build on that one: rule checks first, an optional LLM judge after, and one failed critical case exits 1 whatever the pass rate.
+
+```bash
+npx -y github:Binarysite/agent-eval-harness#v0.3.0 -s scenarios.json -a agent.js
+```
+
+In the bundled example (a rule-based stand-in agent with its privacy check removed on purpose, scored by the mock judge), 23 of 24 cases pass (95.8%) and the run still exits 1. The README shows how to fetch the starter files.
+
+### [shell-guard-bench](https://github.com/Binarysite/shell-guard-bench)
+Does your Claude Code safety hook catch `cd dir && rm -rf ~`? 89 dangerous, evasive and harmless commands, never run by the bench, thrown at any PreToolUse hook: what it blocks, what slips through, what it blocks by mistake.
+
+```bash
+npx --yes github:Binarysite/shell-guard-bench#v0.1.0 --hook "$HOME/.claude/hooks/guard.sh" --cwd "$(mktemp -d)"
+```
+
+Measured on cc-safety-net 2.6.7: it contains all 20 critical delete and git cases and blocks none of the 17 harmless commands. Kills, rsync, databases, deploys and sudo are outside what it promises.
 
 ## What I work on
 
