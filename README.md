@@ -11,7 +11,7 @@ Santiago, Chile (UTC-3) · [rosadilla.dev](https://www.rosadilla.dev) · [Linked
 Three small tools for shipping agents. Each one clones and runs with no install and no API key, has zero runtime dependencies, typed declarations checked in CI on Node 22 and 24, and its known limits written down.
 
 - **[agent-eval-harness](https://github.com/Binarysite/agent-eval-harness)**: can this agent be released? Deterministic rule checks, an optional LLM judge, and a run that fails if any critical case fails. In the bundled example (a rule-based stand-in agent with its privacy check removed on purpose, scored by the mock judge), 23 of 24 cases pass (95.8%) and the run still exits 1.
-- **[shell-guard-bench](https://github.com/Binarysite/shell-guard-bench)**: does the guard on a coding agent's shell hold? 89 dangerous, evasive and harmless commands, none executed, thrown at any Claude Code PreToolUse hook: what it blocks, what slips through, what it blocks by mistake.
+- **[shell-guard-bench](https://github.com/Binarysite/shell-guard-bench)**: does the guard on a coding agent's shell hold? 89 dangerous, evasive and harmless commands, never run by the bench, thrown at any Claude Code PreToolUse hook: what it blocks, what slips through, what it blocks by mistake.
 - **[llm-cascade-router](https://github.com/Binarysite/llm-cascade-router)**: does this message need the model at all? Exact match, local scoring and a classifier answer first, with a trace per layer: on its own in-sample bank of 48 invented messages, 31 skip the main LLM; on 24 held-out messages, 7 do, with 1 wrong fixed answer.
 
 ## What I work on
