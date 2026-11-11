@@ -17,7 +17,7 @@ Senior software engineer and tech lead. Santiago, Chile (UTC-3).
 | [llm-cascade-router](https://github.com/Binarysite/llm-cascade-router) | Which messages never needed the LLM? | On CLINC150's 5,500 public test messages, the local layers answer 110 of 450 in-scope questions with 2 wrong out of 112 answers given, and send the rest to the model |
 
 Each one runs with one command and no API key, and its CI checks that the output shown in
-the README matches a fresh run. The first three have zero runtime dependencies.
+the README matches a fresh run. The harness, the bench and the router have zero runtime dependencies.
 
 ## Recent work
 
