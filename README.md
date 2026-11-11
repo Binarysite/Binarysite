@@ -13,10 +13,11 @@ Senior software engineer and tech lead. Santiago, Chile (UTC-3).
 |---|---|---|
 | [agent-eval-harness](https://github.com/Binarysite/agent-eval-harness) | Did this change make the agent unsafe, even though the pass rate looks fine? | 23 of 24 cases pass and the build still exits 1 on a privacy leak. Its LLM judge was [measured on 48 labelled replies](https://github.com/Binarysite/agent-eval-harness/tree/main/reports/calibration): with `deepseek-reasoner` the gate caught 25 of 25 bad ones (after a fix that measurement found) and wrongly failed 1 of 23 good ones |
 | [shell-guard-bench](https://github.com/Binarysite/shell-guard-bench) | Does your Claude Code hook stop `cd x && rm -rf ~`, or only `rm -rf ~`? | 201 commands thrown at a hook as data, never executed by the bench. A public guard, cc-safety-net 2.6.7, scored against its own documented promises and against the bench's policy, separately |
+| [mcp-footprint](https://github.com/Binarysite/mcp-footprint) | How many context tokens does an MCP server cost before you type anything? | Seven official servers measured with pinned versions: Notion's tool definitions come to 17,140 o200k tokens, sequential-thinking's to 488. A CI budget fails the build when a server's definitions grow |
 | [llm-cascade-router](https://github.com/Binarysite/llm-cascade-router) | Which messages never needed the LLM? | On CLINC150's 5,500 public test messages, the local layers answer 110 of 450 in-scope questions with 2 wrong out of 112 answers given, and send the rest to the model |
 
-Each one runs offline with one command and no API key, has zero runtime dependencies, and
-its CI checks that the output shown in the README matches a fresh run.
+Each one runs with one command and no API key, and its CI checks that the output shown in
+the README matches a fresh run. The first three have zero runtime dependencies.
 
 ## Recent work
 
